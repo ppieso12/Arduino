@@ -235,6 +235,7 @@ void init(){
 }
 
 void printError(byte *board){
+  reset();
   wait = true;
   last_n = n;
   last_i = i;
