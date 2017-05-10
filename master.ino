@@ -172,6 +172,7 @@ int pressedButton(){
   {
     uint8_t mask = 0x1 << position;
     
+    //https://blog.3d-logic.com/2015/01/10/using-a-tm1638-based-board-with-arduino/
     //zamiast tego -> setLed(buttons & mask ? 1 : 0, position); dałem tego ifa
     if (buttons & mask) {
       return position + 1;
