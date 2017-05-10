@@ -66,21 +66,11 @@ void loop() {
   reset();
   if(!completed){
     reset();
-    switch (buttons)
-    {
-    case 0:
-    completed = false;
-    break;
-    case 1:
-     completed = false;
-    break;
-    default:
-    completed = false;
-    break;
-    }
+   
     for (byte i=0; i<8; i++){
       for (byte n=0; n<16*TIMES; n++){
         changing(i);
+        action_listener(pressedButton());
       }
        printText(i);
        lightsOn(i);
@@ -126,6 +116,52 @@ void lightsOn(byte i){
   shiftOut(dio, clk, LSBFIRST, 1);
   digitalWrite(stb, HIGH);
 }
+
+uint8_t readButtons(void)
+{
+  uint8_t buttons = 0;
+  digitalWrite(stb, LOW);
+  shiftOut(dio, clk, LSBFIRST, 0x42);
+ 
+  pinMode(dio, INPUT);
+ 
+  for (uint8_t i = 0; i < 4; i++)
+  {
+    uint8_t v = shiftIn(dio, clk, LSBFIRST) << i;
+    buttons |= v;
+  }
+ 
+  pinMode(dio, OUTPUT);
+  digitalWrite(stb, HIGH);
+  return buttons;
+}
+
+int pressedButton(){
+  uint8_t buttons = readButtons();
+ 
+  for(uint8_t position = 0; position < 2; position++)
+  {
+    uint8_t mask = 0x1 << position;
+    
+    //zamiast tego -> setLed(buttons & mask ? 1 : 0, position); dałem tego ifa
+    if (buttons & mask) {
+      return position + 1;
+    }else
+      return 0;
+  }
+}
+
+void action_listener( int button_number){
+  
+  if(button_number == 1){ //akcja dla 1 buttona
+    
+    
+  }else if(button_number == 2){
+    
+    
+  }
+}
+
 void read_code(){
   for(int i = 0; i < 8; i++){
     text[i] = digits[(int)(CODE[i])];
