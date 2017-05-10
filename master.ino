@@ -76,12 +76,13 @@ void loop() {
 
       for (byte i=last_n; i<8; i++){
         for (byte n=last_i; n<16*TIMES; n++){
+         action_listener(pressedButton());
          if(wait){                //To last n i last i żeby mozna było startować od pewnego miejsca, niezbyt dobry pomysl
            last_n = n;
            break;
          }
           changing(i);
-          action_listener(pressedButton());
+         
         }
          if(wait){
            last_i = i;
