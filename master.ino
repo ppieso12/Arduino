@@ -41,8 +41,10 @@ char CODE[8]="EbF12375";  //Domyslny / zmienny przez kompa
 int TIMES = 1;
 int DISP = 100;
 
-int last_i;
-int last_n;
+int last_i = 0;
+int last_n = 0;
+int i = 0;
+int n = 0;
 
 bool completed = false;
 bool wait = false;
@@ -75,18 +77,19 @@ void setup() {
 }
  
 void loop() {
-  last_n = 0;
-  last_i = 0;
+ // last_n = 0;
+ // last_i = 0;
   action_listener(pressedButton());
   
   if(!wait){
     reset();
-
+   
+    
     if(!completed){
    //   reset();
 
-      for (byte i=last_n; i<8; i++){
-        for (byte n=last_i; n<16*TIMES; n++){
+      for ( i = last_n; i<8; i++){
+        for ( n = last_i; n<16*TIMES; n++){
          action_listener(pressedButton());
          if(wait){                //To last n i last i żeby mozna było startować od pewnego miejsca, niezbyt dobry pomysl
            last_n = n;
@@ -102,6 +105,8 @@ void loop() {
          printText(i);
          lightsOn(i);
       }
+      last_n = 0;
+      last_i = 0;
       completed = true;
       wait = true;
       delay(1000);
@@ -200,9 +205,15 @@ void action_listener( int button_number){
 }
 
 void read_code(){
-  for(int i = 0; i < 8; i++){
-    text[i] = digits[(int)(CODE[i])];
-  }
+ if(strlen(CODE) == 8){
+  
+   for(int i = 0; i < 8; i++){
+     text[i] = digits[(int)(CODE[i])];
+   }
+ }else{
+  printError(error_code);
+  //error
+ }
 }
 
 void init(){
@@ -221,4 +232,21 @@ void init(){
   digits[100] = DIGIT_d;
   digits[69] = DIGIT_E;
   digits[70] = DIGIT_F;
+}
+
+void printError(byte *board){
+  wait = true;
+  last_n = n;
+  last_i = i;
+  int position;
+ 
+  sendCommand(0x40);
+  digitalWrite(stb,LOW);
+ 
+  for (position = 0; position < 8; position++){
+    shiftOut(dio, clk, LSBFIRST, 0xc0 + (position << 1));
+    shiftOut(dio, clk, LSBFIRST, board[position]);
+    shiftOut(dio, clk, LSBFIRST, 0x00);
+  }
+  digitalWrite(stb,HIGH);
 }
