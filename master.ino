@@ -23,7 +23,6 @@ const int dio = 8;
 // define a module on data pin 8, clock pin 9 and strobe pin 10
 //TM1638 module(8, 9, 10);
  
-byte buttons;
 byte digits[115];
 byte text[8];   //docelowy text wypisywany w funkcji printText
 
@@ -32,7 +31,7 @@ int TIMES = 1;
 int DISP = 100;
 
 bool completed = false;
-
+bool wait = false;
  
 void sendCommand(byte value){
   digitalWrite(stb,LOW);
@@ -62,21 +61,25 @@ void setup() {
 }
  
 void loop() {
-  buttons=module.getButtons();
-  reset();
-  if(!completed){
+  
+  if(!wait){
     reset();
-   
-    for (byte i=0; i<8; i++){
-      for (byte n=0; n<16*TIMES; n++){
-        changing(i);
-        action_listener(pressedButton());
+  
+    action_listener(pressedButton());
+    if(!completed){
+      reset();
+
+      for (byte i=0; i<8; i++){
+        for (byte n=0; n<16*TIMES; n++){
+          changing(i);
+          action_listener(pressedButton());
+        }
+         printText(i);
+         lightsOn(i);
       }
-       printText(i);
-       lightsOn(i);
+      completed = true;
+      delay(1000);
     }
-    completed = true;
-    delay(1000);
   }
 }
  
@@ -154,10 +157,17 @@ int pressedButton(){
 void action_listener( int button_number){
   
   if(button_number == 1){ //akcja dla 1 buttona
+      if(wait){
+        wait = false
+      }else{
+        wait = true;
+      }                         /* Naciśnięcie w 
+                                trakcie procesu łamania kodu przycisku S1 powoduje wstrzymanie łamania, a kolejne 
+                                naciśnięcie wznawia łamanie*/
     
     
-  }else if(button_number == 2){
-    
+  }else if(button_number == 2){  // naciśnięcie przycisku S2 – wtedy ponownie łamany jest dotychczasowy kod 
+    completed = false;          /*naciskanie przycisku S2 w trakcie łamania nie powinna powodować żadnej akcji. */
     
   }
 }
