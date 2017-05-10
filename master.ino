@@ -20,8 +20,10 @@ const int stb = 10;
 const int clk = 9;
 const int dio = 8;
  
-// define a module on data pin 8, clock pin 9 and strobe pin 10
-//TM1638 module(8, 9, 10);
+/*TO DO
+Program powinien sygnalizować (poprzez wyświetlenie odpowiedniego komunikatu) 
+ewentualne błędy w podanych komendach lub parametrach. 
+*/
  
 byte digits[115];
 byte text[8];   //docelowy text wypisywany w funkcji printText
