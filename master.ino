@@ -30,6 +30,9 @@ char CODE[8]="EbF12375";  //Domyslny / zmienny przez kompa
 int TIMES = 1;
 int DISP = 100;
 
+int last_i;
+int last_n;
+
 bool completed = false;
 bool wait = false;
  
@@ -61,23 +64,34 @@ void setup() {
 }
  
 void loop() {
+  last_n = 0;
+  last_i = 0;
+  action_listener(pressedButton());
   
   if(!wait){
     reset();
-  
-    action_listener(pressedButton());
-    if(!completed){
-      reset();
 
-      for (byte i=0; i<8; i++){
-        for (byte n=0; n<16*TIMES; n++){
+    if(!completed){
+   //   reset();
+
+      for (byte i=last_n; i<8; i++){
+        for (byte n=last_i; n<16*TIMES; n++){
+         if(wait){                //To last n i last i żeby mozna było startować od pewnego miejsca, niezbyt dobry pomysl
+           last_n = n;
+           break;
+         }
           changing(i);
           action_listener(pressedButton());
         }
+         if(wait){
+           last_i = i;
+           break;
+         }
          printText(i);
          lightsOn(i);
       }
       completed = true;
+      wait = true;
       delay(1000);
     }
   }
@@ -168,7 +182,7 @@ void action_listener( int button_number){
     
   }else if(button_number == 2){  // naciśnięcie przycisku S2 – wtedy ponownie łamany jest dotychczasowy kod 
     completed = false;          /*naciskanie przycisku S2 w trakcie łamania nie powinna powodować żadnej akcji. */
-    
+    wait = false;
   }
 }
 
