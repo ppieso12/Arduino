@@ -15,11 +15,20 @@
 #define DIGIT_d 0x5E
 #define DIGIT_E 0x79
 #define DIGIT_F 0x71
+//dla errorów
+#define DIGIT__ 0x40
+#define DIGIT_r 0x50
+#define DIGIT_o 0x5c
+#define DIGIT_P 0x73
+#define DIGIT_S 0x6D
+#define DIGIT_I 0x30
 
 const int stb = 10;
 const int clk = 9;
 const int dio = 8;
- 
+const byte error_code[] = {DIGIT_E, DIGIT_r, DIGIT_r, DIGIT__, DIGIT_C, DIGIT_o, DIGIT_d, DIGIT_E};
+const byte error_times[] = {DIGIT_E, DIGIT_r, DIGIT_r, DIGIT__, DIGIT_r, DIGIT_E, DIGIT_P, DIGIT_S};
+const byte error_disp[] = {DIGIT_E, DIGIT_r, DIGIT_r, DIGIT__, DIGIT_d, DIGIT_I, DIGIT_S, DIGIT_P}; 
 /*TO DO
 Program powinien sygnalizować (poprzez wyświetlenie odpowiedniego komunikatu) 
 ewentualne błędy w podanych komendach lub parametrach. 
