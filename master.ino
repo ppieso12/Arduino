@@ -20,7 +20,7 @@
 #define DIGIT_r 0x50
 #define DIGIT_o 0x5c
 #define DIGIT_P 0x73
-#define DIGIT_S 0x6D
+#define DIGIT_S 0x6d
 #define DIGIT_I 0x30
 
 const int stb = 10;
