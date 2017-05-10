@@ -1,19 +1,4 @@
 //#include <TM1638.h>
-const int stb = 10;
-const int clk = 9;
-const int dio = 8;
- 
-// define a module on data pin 8, clock pin 9 and strobe pin 10
-//TM1638 module(8, 9, 10);
- 
-byte buttons;
- 
-byte text[8];//chuja
-char CODE[8]="EbF12375";
-int TIMES = 1;
-int DISP = 100;
- 
- bool completed = false;
 #define DIGIT_0 0x3f
 #define DIGIT_1 0x06
 #define DIGIT_2 0x5b
@@ -25,15 +10,33 @@ int DISP = 100;
 #define DIGIT_8 0x7f
 #define DIGIT_9 0x6f
 #define DIGIT_A 0x77
-#define DIGIT_B 0x7c
+#define DIGIT_b 0x7c
 #define DIGIT_C 0x39
-#define DIGIT_D 0x5E
+#define DIGIT_d 0x5E
 #define DIGIT_E 0x79
 #define DIGIT_F 0x71
+
+const int stb = 10;
+const int clk = 9;
+const int dio = 8;
+ 
+// define a module on data pin 8, clock pin 9 and strobe pin 10
+//TM1638 module(8, 9, 10);
+ 
+byte buttons;
+byte digits[115];
+byte text[8];   //docelowy text wypisywany w funkcji printText
+
+char CODE[8]="EbF12375";  //Domyslny / zmienny przez kompa
+int TIMES = 1;
+int DISP = 100;
+
+bool completed = false;
+
  
 void sendCommand(byte value){
   digitalWrite(stb,LOW);
-   shiftOut(dio,clk,LSBFIRST,value);
+  shiftOut(dio,clk,LSBFIRST,value);
   digitalWrite(stb,HIGH);
 }
  
@@ -47,17 +50,13 @@ void reset(){
   digitalWrite(stb,HIGH);
 }
  
-void CharToByte(){
-  for(unsigned int i = 0; i < 8; i++){
-    text[i] = (byte)CODE[i];
-  }
-}
  
 void setup() {
   pinMode(stb, OUTPUT);
   pinMode(clk,OUTPUT);
   pinMode(dio, OUTPUT);
-  CharToByte();
+  init();
+  read_code();
   sendCommand(0x8F);
   reset();
 }
@@ -105,7 +104,7 @@ bool printText(byte i){
  
 bool changing(byte i){
   byte board[] = {DIGIT_0, DIGIT_1, DIGIT_2, DIGIT_3, DIGIT_4, DIGIT_5, DIGIT_6, DIGIT_7,
-                  DIGIT_8, DIGIT_9, DIGIT_A, DIGIT_B, DIGIT_C, DIGIT_D, DIGIT_E, DIGIT_F, };
+                  DIGIT_8, DIGIT_9, DIGIT_A, DIGIT_b, DIGIT_C, DIGIT_d, DIGIT_E, DIGIT_F, };
   byte position = i;
   static byte index = 0;
   sendCommand(0x40);
@@ -123,7 +122,30 @@ bool changing(byte i){
  
 void lightsOn(byte i){
   digitalWrite(stb, LOW);
-      shiftOut(dio, clk, LSBFIRST, 0xc1+(i*2)); // led on
-      shiftOut(dio, clk, LSBFIRST, 1);
-     digitalWrite(stb, HIGH);
+  shiftOut(dio, clk, LSBFIRST, 0xc1+(i*2)); // led on
+  shiftOut(dio, clk, LSBFIRST, 1);
+  digitalWrite(stb, HIGH);
+}
+void read_code(){
+  for(int i = 0; i < 8; i++){
+    text[i] = digits[(int)(CODE[i])];
+  }
+}
+
+void init(){
+  digits[48] = DIGIT_0;
+  digits[49] = DIGIT_1;
+  digits[50] = DIGIT_2;
+  digits[51] = DIGIT_3;
+  digits[52] = DIGIT_4;
+  digits[53] = DIGIT_5;
+  digits[54] = DIGIT_6;
+  digits[55] = DIGIT_7;
+  digits[56] = DIGIT_8;
+  digits[65] = DIGIT_A;
+  digits[98] = DIGIT_b;
+  digits[67] = DIGIT_C;
+  digits[100] = DIGIT_d;
+  digits[69] = DIGIT_E;
+  digits[70] = DIGIT_F;
 }
