@@ -1,4 +1,4 @@
-# Arduino project
+# Arduino tm1638 based board project
 
 https://drive.google.com/open?id=0B3Xrl23cTkWuYjJOY2NOWHpXUU0
 
@@ -30,3 +30,5 @@ Parametry (ustalane przed kompilacją kodu):
 CODE  - ciąg ośmiu cyfr szesnastkowych stanowiących kod 
 TIMES - liczba powtórzeń wyświetleń określająca złamanie znaku 
 DISP  - czas wyświetlania pojedynczego znaku 
+
+https://blog.3d-logic.com/2015/01/10/using-a-tm1638-based-board-with-arduino/
